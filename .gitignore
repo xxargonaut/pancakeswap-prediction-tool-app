@@ -1,0 +1,10 @@
+# Ignore Node.js modules
+node_modules/
+
+# Ignore Next.js build output
+.next/
+
+# Ignore Python cache files
+__pycache__/
+
+myenv
