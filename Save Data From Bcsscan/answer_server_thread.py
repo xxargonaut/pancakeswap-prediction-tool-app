@@ -2,7 +2,7 @@ import psycopg2
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from psycopg2 import sql
-from dbmanager.dbmanager import db_params, create_answer_table, insert_answer
+from dbmanager.dbmanager import db_params, create_answer_table, insert_answer, get_current_answer_fromSQL
 from answer.get_round_data import get_round_data
 
 def fetch_and_insert(connection, roundId):
@@ -29,7 +29,8 @@ def main():
     create_answer_table(connection)
 
     # roundId = 55340232221128654849
-    roundId = 55340232221129180749
+    # roundId = 55340232221129180749
+    roundId = get_current_answer_fromSQL(connection) - 10
     num_threads = 50
 
     while True:
