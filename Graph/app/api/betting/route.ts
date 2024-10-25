@@ -23,10 +23,8 @@ export async function POST(request: Request) {
         `;
         const epoch_result = await client.query(epoch_query, [to - length, to]);
         const rows = epoch_result.rows || [];
-        console.log(rows);
 
         const epoch = Number(rows[rows.length - option - 1].epoch) + 1;
-        console.log(epoch);
 
         try {
             const check_query = `SELECT 1 FROM Betting WHERE epoch = $1;`;
