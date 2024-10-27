@@ -29,8 +29,7 @@ def main():
     create_answer_table(connection)
 
     # roundId = 55340232221128654849
-    # roundId = 55340232221129180749
-    roundId = get_current_answer_fromSQL(connection) - 10
+    roundId = get_current_answer_fromSQL(connection) - 50
     num_threads = 50
 
     while True:
