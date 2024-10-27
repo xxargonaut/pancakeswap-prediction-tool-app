@@ -28,12 +28,27 @@ const Home = () => {
 
     const [betting_option, setBettingOption] = useState(0);
     const [betting_data, setBettingData] = useState<BettingData>();
+    const [answer_formattedDate, setAnswerFormattedDate] = useState(Date);
 
     const [number_of_pages, setNumberOfPages] = useState(0);
     const [current_timestamp, setCurrentTimestamp] = useState(0);
     const [number_of_prev_page, setNumberOfPrevPage] = useState(0);
     const [date_Length, setDateLength] = useState(1500);
     const [timestampLength, setTimeStampLength] = useState(1500);
+
+    const formattedDate = (timestamp: number) => {
+        const date = new Date(timestamp * 1000);
+        const formattedDate = date.toLocaleString("en-US", {
+            timeZone: "America/Los_Angeles",
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+        });
+        return formattedDate;
+    }
 
     useEffect(() => {
         const fetchAnswer = async (dateLength: number, numberOfPrevPage: number) => {
@@ -77,6 +92,10 @@ const Home = () => {
                 const sqldata = await response.json();
                 setNumberOfPages(Math.trunc(sqldata.time_width / date_Length) + 1);
                 setCurrentTimestamp(sqldata.current_timestamp);
+
+                const timestamp = sqldata.current_timestamp;
+                setAnswerFormattedDate(formattedDate(timestamp));
+
             } catch (err) {
                 console.error("Error fetching data:", err);
             }
@@ -91,7 +110,7 @@ const Home = () => {
                     },
                     body: JSON.stringify(bettingData),
                 });
-    
+
                 if (response.ok) {
                     const result = await response.json();
                     toast.success(result.message);
@@ -125,18 +144,18 @@ const Home = () => {
     const applyTimestamp = () => {
         if (!isNaN(timestampLength)) {
             setDateLength(timestampLength);
-            setBettingData({to: 0, length: 0, option: 0, value: true});
+            setBettingData({ to: 0, length: 0, option: 0, value: true });
         }
     };
 
     const increaseNumOfPrevPage = () => {
         setNumberOfPrevPage(number_of_prev_page + 1);
-        setBettingData({to: 0, length: 0, option: 0, value: true});
+        setBettingData({ to: 0, length: 0, option: 0, value: true });
     }
 
     const decreaseNumOfPrevPage = () => {
         setNumberOfPrevPage(number_of_prev_page - 1);
-        setBettingData({to: 0, length: 0, option: 0, value: true});
+        setBettingData({ to: 0, length: 0, option: 0, value: true });
     }
 
     const applyBetting = (value: boolean) => {
@@ -157,18 +176,18 @@ const Home = () => {
                 {(answer_data.length > 0 || epoch_data.length > 0) && <Graph data1={answer_data} data2={epoch_data} bettingOption={betting_option} />}
                 <div className='bg-red-300 min-w-[290px] max-w-[290px] flex flex-col justify-center rounded-l-xl min-h-[700px]'>
                     <h1 className='p-3 text-3xl font-medium text-gray-700'>This is a graph from <span className='text-xl font-bold text-black'>
-                            {(loadingAnswer || loadingEpoch) && ''}
-                            {epoch_data.length > 0 && `${current_timestamp - (number_of_prev_page + 1) * date_Length}`}
-                        </span> to <span className='text-xl font-bold text-black'>
+                        {(loadingAnswer || loadingEpoch) && ''}
+                        {epoch_data.length > 0 && `${current_timestamp - (number_of_prev_page + 1) * date_Length}`}
+                    </span> to <span className='text-xl font-bold text-black'>
                             {(loadingAnswer || loadingEpoch) && ''}
                             {epoch_data.length > 0 && `${current_timestamp - number_of_prev_page * date_Length}`}
                         </span>
                     </h1>
                     <div className='p-3 flex flex-col gap-3 border-t-2 border-red-200'>
                         Betting settings
-                        <div className='p-3 flex flex-col gap-3 rounded-t-lg bg-red-200 text-center'>
+                        <div className='p-3 flex flex-col gap-2 rounded-t-lg bg-red-200 text-left'>
                             {(loadingAnswer || loadingEpoch) && 'Loading...'}
-                            {epoch_data.length > 0 && `${Number(epoch_data[epoch_data.length - betting_option - 1].colC) + 306}`}
+                            {epoch_data.length > 0 && <><div className='flex justify-between bg-green-300 border-green-400 border-2 rounded-md'><p>{current_timestamp}</p>:<p>{answer_formattedDate}</p></div><div className='flex justify-between bg-red-300 border-red-400 border-2 rounded-md'><p>{Number(epoch_data[epoch_data.length - betting_option - 1].colC) + 306}</p>:<p>{formattedDate(Number(epoch_data[epoch_data.length - betting_option - 1].colC) + 306)}</p></div></>}
                         </div>
                         <div className='flex bg-red-200 p-3 rounded-b-lg justify-between '>
                             <button
