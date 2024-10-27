@@ -2,7 +2,7 @@ import psycopg2
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from psycopg2 import sql
-from dbmanager.dbmanager import db_params, create_epoch_table, insert_epoch
+from dbmanager.dbmanager import db_params, create_epoch_table, insert_epoch, get_current_epoch_fromSQL
 from epoch.get_rounds import get_rounds
 from epoch.get_current_epoch import get_current_epoch
 
@@ -34,7 +34,7 @@ def main():
     create_epoch_table(connection)
 
     # index = 298826
-    index = 308831
+    index = get_current_epoch_fromSQL(connection) - 5
     num_threads = 5
 
     while True:
