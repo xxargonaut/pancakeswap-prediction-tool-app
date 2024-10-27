@@ -151,11 +151,13 @@ const Home = () => {
     const increaseNumOfPrevPage = () => {
         setNumberOfPrevPage(number_of_prev_page + 1);
         setBettingData({ to: 0, length: 0, option: 0, value: true });
+        setBettingOption(0);
     }
 
     const decreaseNumOfPrevPage = () => {
         setNumberOfPrevPage(number_of_prev_page - 1);
         setBettingData({ to: 0, length: 0, option: 0, value: true });
+        setBettingOption(0);
     }
 
     const applyBetting = (value: boolean) => {
