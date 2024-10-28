@@ -30,11 +30,11 @@ def main():
                         except Exception as e:
                             print(f"Failed to insert the data to epoch table: {e}")
                     else:
-                        print(f"Start counting down 2.5 minutes")
-                        time.sleep(149)
+                        print(f"Start counting down 1 minute")
+                        time.sleep(59)
                 else:
-                    print(f"Start counting down 2.5 minutes")
-                    time.sleep(149)
+                    print(f"Start counting down 1 minute")
+                    time.sleep(59)
             except Exception as e:
                 print(f"Failed to fetch index'th round data: {e}")
         except Exception as e:
