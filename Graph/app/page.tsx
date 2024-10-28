@@ -189,7 +189,7 @@ const Home = () => {
                         Betting settings
                         <div className='p-3 flex flex-col gap-2 rounded-t-lg bg-red-200 text-left'>
                             {(loadingAnswer || loadingEpoch) && 'Loading...'}
-                            {epoch_data.length > 0 && <><div className='flex justify-between bg-green-300 border-green-400 border-2 rounded-md'><p>{current_timestamp}</p>:<p>{answer_formattedDate}</p></div><div className='flex justify-between bg-red-300 border-red-400 border-2 rounded-md'><p>{Number(epoch_data[epoch_data.length - betting_option - 1].colC) + 306}</p>:<p>{formattedDate(Number(epoch_data[epoch_data.length - betting_option - 1].colC) + 306)}</p></div></>}
+                            {epoch_data.length > 0 && <><div className='flex justify-between bg-green-300 border-green-400 border-2 rounded-md px-1'><p>{current_timestamp}</p>:<p>{answer_formattedDate}</p></div><div className='flex justify-between bg-red-300 border-red-400 border-2 rounded-md px-1'><p>{Number(epoch_data[epoch_data.length - betting_option - 1].colC) + 306}</p>:<p className='text-cyan-600'>{formattedDate(Number(epoch_data[epoch_data.length - betting_option - 1].colC) + 306)}</p></div></>}
                         </div>
                         <div className='flex bg-red-200 p-3 rounded-b-lg justify-between '>
                             <button
