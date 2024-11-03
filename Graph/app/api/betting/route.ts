@@ -17,7 +17,7 @@ export async function POST(request: Request) {
         console.log('Connected to the database successfully.');
 
         const epoch_query = `
-            SELECT epoch FROM Epoch
+            SELECT epoch, lockTimestamp FROM Epoch
             WHERE lockTimestamp BETWEEN $1 AND $2
             ORDER BY lockTimestamp ASC;
         `;
@@ -25,18 +25,30 @@ export async function POST(request: Request) {
         const rows = epoch_result.rows || [];
 
         const epoch = Number(rows[rows.length - option - 1].epoch) + 1;
-
+        const timeStamp = Number(rows[rows.length - option - 1].locktimestamp) + 306;
+        
         try {
+            // Step 1: Create the Betting table if it doesn't exist
+            const create_table_query = `
+                CREATE TABLE IF NOT EXISTS Betting (
+                    epoch BIGINT PRIMARY KEY,
+                    timeStamp BIGINT,
+                    betting_flag BOOLEAN NOT NULL
+                );
+            `;
+            await client.query(create_table_query);
+        
+            // Step 2: Check if a row with the specified epoch already exists
             const check_query = `SELECT 1 FROM Betting WHERE epoch = $1;`;
             const insert_bet_query = `
-                INSERT INTO Betting (epoch, betting_flag)
-                VALUES ($1, $2);
+                INSERT INTO Betting (epoch, timeStamp, betting_flag)
+                VALUES ($1, $2, $3);
             `;
             
             const check_result = await client.query(check_query, [epoch]);
             if (check_result.rowCount === 0) {
-                await client.query(insert_bet_query, [epoch, value]);
-
+                await client.query(insert_bet_query, [epoch, timeStamp, value]);
+        
                 return new Response(JSON.stringify({ message: 'Betting data saved successfully.' }), {
                     status: 200,
                     headers: {
@@ -52,7 +64,7 @@ export async function POST(request: Request) {
                     },
                 });
             }
-
+        
         } catch (error) {
             console.error('Error saving betting data:', error);
             return new Response(JSON.stringify({ error: 'Failed to save betting data' }), {
