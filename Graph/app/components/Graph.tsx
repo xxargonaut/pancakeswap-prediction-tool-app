@@ -33,6 +33,8 @@ const Graph: FC<GraphProps> = ({ data1, data2, bettingOption }) => {
 
     const lastColCInEpoch = data2[data2.length - bettingOption - 1]?.colC || 0;
     const verticalLinePosition = Number(lastColCInEpoch) + 306;
+    const verticalLinePosition1 = Number(lastColCInEpoch) + 306*2;
+    const verticalLinePosition2 = Number(lastColCInEpoch) + 306*3;
 
     const lastEpochPoint = data2[data2.length - bettingOption - 1]?.colD || 0;
     const lastEpochPointAdjusted = Number(lastEpochPoint) / Math.pow(10, 8);
@@ -90,6 +92,30 @@ const Graph: FC<GraphProps> = ({ data1, data2, bettingOption }) => {
                         borderWidth: 1,
                         label: {
                             content: `Position: ${verticalLinePosition}`,
+                            enabled: true,
+                            position: 'end' as const, // Label position
+                        },
+                    },
+                    verticalLine1: {
+                        type: 'line' as const,
+                        xMin: verticalLinePosition1, // Position of the vertical line
+                        xMax: verticalLinePosition1, // Ensures the line is vertical
+                        borderColor: 'rgba(0, 0, 255, 0.5)', // Color of the vertical line
+                        borderWidth: 1,
+                        label: {
+                            content: `Position: ${verticalLinePosition1}`,
+                            enabled: true,
+                            position: 'end' as const, // Label position
+                        },
+                    },
+                    verticalLine2: {
+                        type: 'line' as const,
+                        xMin: verticalLinePosition2, // Position of the vertical line
+                        xMax: verticalLinePosition2, // Ensures the line is vertical
+                        borderColor: 'rgba(0, 0, 255, 0.5)', // Color of the vertical line
+                        borderWidth: 1,
+                        label: {
+                            content: `Position: ${verticalLinePosition2}`,
                             enabled: true,
                             position: 'end' as const, // Label position
                         },
