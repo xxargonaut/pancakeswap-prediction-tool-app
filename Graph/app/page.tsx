@@ -36,8 +36,8 @@ const Home = () => {
     const [number_of_pages, setNumberOfPages] = useState(0);
     const [current_timestamp, setCurrentTimestamp] = useState(0);
     const [number_of_prev_page, setNumberOfPrevPage] = useState(0);
-    const [date_Length, setDateLength] = useState(1500);
-    const [timestampLength, setTimeStampLength] = useState(1500);
+    const [date_Length, setDateLength] = useState(2000);
+    const [timestampLength, setTimeStampLength] = useState(2000);
 
     const formattedDate = (timestamp: number) => {
         const date = new Date(timestamp * 1000);
