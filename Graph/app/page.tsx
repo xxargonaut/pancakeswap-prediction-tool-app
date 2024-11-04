@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import Graph from './components/Graph';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 interface RowData {
     colC: string;
@@ -18,6 +19,8 @@ interface BettingData {
 }
 
 const Home = () => {
+    const router = useRouter();
+
     const [answer_data, setAnswer] = useState<RowData[]>([]);
     const [loadingAnswer, setLoadingAnswer] = useState(true);
     const [errorAnswer, setErrorAnswer] = useState<string | null>(null);
@@ -101,9 +104,9 @@ const Home = () => {
             }
         };
 
-        const fetchBetting = async (bettingData: BettingData) => {
+        const postBetting = async (bettingData: BettingData) => {
             try {
-                const response = await fetch('/api/betting', {
+                const response = await fetch('/api/betting/bet', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -133,7 +136,7 @@ const Home = () => {
         fetchData();
 
         if (betting_data && betting_data?.to != 0) {
-            fetchBetting(betting_data)
+            postBetting(betting_data)
         }
 
 
@@ -171,7 +174,14 @@ const Home = () => {
 
     return (
         <div className="p-4 h-screen flex flex-col justify-between">
-            <h1 className="text-2xl font-bold">Answer and Epoch Graph</h1>
+            <div className='flex items-end gap-6'>
+                <h1 className="text-2xl font-bold">Answer and Epoch Graph</h1>
+                <div className='flex gap-2 items-end'>
+                    <span className='font-bold' onClick={() => {router.push('/')}}>Graph</span>
+                    <span className='text-[10px] pb-[6px]'>→</span>
+                    <span className='cursor-pointer' onClick={() => {router.push('/betting')}}>betting table</span>
+                </div>
+            </div>
             <div className='flex flex-row h-full justify-end'>
                 {(loadingAnswer || loadingEpoch) && <div className='w-[100%] h-full flex justify-center items-center text-[50px]'><p>Loading...</p></div>}
                 {(errorAnswer || errorEpoch) && <div className='w-[100%] h-full flex justify-center items-center text-[50px]'><p className="text-red-500">{errorAnswer || errorEpoch}</p></div>}
