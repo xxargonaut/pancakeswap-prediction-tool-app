@@ -84,6 +84,18 @@ const Graph: FC<GraphProps> = ({ data1, data2, bettingOption }) => {
         plugins: {
             annotation: {
                 annotations: {
+                    horizontalLine: {
+                        type: 'line' as const,
+                        yMin: lastEpochPointAdjusted, // Horizontal line at the last epoch point
+                        yMax: lastEpochPointAdjusted,
+                        borderColor: 'rgba(0, 0, 255, 0.5)', // Color for horizontal line
+                        borderWidth: 1,
+                        label: {
+                            content: `Epoch Last Point: ${lastEpochPointAdjusted.toFixed(2)}`,
+                            enabled: true,
+                            position: 'end' as const, // Label position
+                        },
+                    },
                     verticalLine: {
                         type: 'line' as const,
                         xMin: verticalLinePosition, // Position of the vertical line
@@ -100,7 +112,7 @@ const Graph: FC<GraphProps> = ({ data1, data2, bettingOption }) => {
                         type: 'line' as const,
                         xMin: verticalLinePosition1, // Position of the vertical line
                         xMax: verticalLinePosition1, // Ensures the line is vertical
-                        borderColor: 'rgba(0, 0, 255, 0.5)', // Color of the vertical line
+                        borderColor: 'red', // Color of the vertical line
                         borderWidth: 1,
                         label: {
                             content: `Position: ${verticalLinePosition1}`,
@@ -112,22 +124,10 @@ const Graph: FC<GraphProps> = ({ data1, data2, bettingOption }) => {
                         type: 'line' as const,
                         xMin: verticalLinePosition2, // Position of the vertical line
                         xMax: verticalLinePosition2, // Ensures the line is vertical
-                        borderColor: 'rgba(0, 0, 255, 0.5)', // Color of the vertical line
+                        borderColor: 'green', // Color of the vertical line
                         borderWidth: 1,
                         label: {
                             content: `Position: ${verticalLinePosition2}`,
-                            enabled: true,
-                            position: 'end' as const, // Label position
-                        },
-                    },
-                    horizontalLine: {
-                        type: 'line' as const,
-                        yMin: lastEpochPointAdjusted, // Horizontal line at the last epoch point
-                        yMax: lastEpochPointAdjusted,
-                        borderColor: 'rgba(0, 0, 255, 0.5)', // Color for horizontal line
-                        borderWidth: 1,
-                        label: {
-                            content: `Epoch Last Point: ${lastEpochPointAdjusted.toFixed(2)}`,
                             enabled: true,
                             position: 'end' as const, // Label position
                         },
