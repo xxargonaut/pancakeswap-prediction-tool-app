@@ -32,9 +32,8 @@ const Graph: FC<GraphProps> = ({ data1, data2, bettingOption }) => {
     const minYAxisValue = minYAxis/Math.pow(10,8);
 
     const lastColCInEpoch = data2[data2.length - bettingOption - 1]?.colC || 0;
-    const verticalLinePosition = Number(lastColCInEpoch) + 306;
-    const verticalLinePosition1 = Number(lastColCInEpoch) + 306*2;
-    const verticalLinePosition2 = Number(lastColCInEpoch) + 306*3;
+    const verticalLinePosition1 = Number(lastColCInEpoch) + 306*1;
+    const verticalLinePosition2 = Number(lastColCInEpoch) + 306*2;
 
     const lastEpochPoint = data2[data2.length - bettingOption - 1]?.colD || 0;
     const lastEpochPointAdjusted = Number(lastEpochPoint) / Math.pow(10, 8);
@@ -92,18 +91,6 @@ const Graph: FC<GraphProps> = ({ data1, data2, bettingOption }) => {
                         borderWidth: 1,
                         label: {
                             content: `Epoch Last Point: ${lastEpochPointAdjusted.toFixed(2)}`,
-                            enabled: true,
-                            position: 'end' as const, // Label position
-                        },
-                    },
-                    verticalLine: {
-                        type: 'line' as const,
-                        xMin: verticalLinePosition, // Position of the vertical line
-                        xMax: verticalLinePosition, // Ensures the line is vertical
-                        borderColor: 'rgba(0, 0, 255, 0.5)', // Color of the vertical line
-                        borderWidth: 1,
-                        label: {
-                            content: `Position: ${verticalLinePosition}`,
                             enabled: true,
                             position: 'end' as const, // Label position
                         },
