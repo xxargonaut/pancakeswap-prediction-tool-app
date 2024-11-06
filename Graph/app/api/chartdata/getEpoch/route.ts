@@ -39,10 +39,14 @@ export async function GET(request: Request) {
 
     const current_epoch_locktime = current_answer_result.rows[0].startedat
 
-    const epoch_query = `SELECT lockTimestamp, lockPrice FROM Epoch WHERE lockTimestamp BETWEEN ${current_epoch_locktime - (numberOfPrevPage + 1) * dateLength} AND ${current_epoch_locktime - numberOfPrevPage * dateLength} ORDER BY lockTimestamp ASC;`;
+    const epoch_query = `SELECT lockTimestamp, lockPrice, closePrice, epoch FROM Epoch WHERE lockTimestamp BETWEEN ${current_epoch_locktime - (numberOfPrevPage + 1) * dateLength} AND ${current_epoch_locktime - numberOfPrevPage * dateLength} ORDER BY lockTimestamp ASC;`;
 
     const epoch_result = await client.query(epoch_query);
-    const rows = epoch_result.rows || [];
+    let rows = epoch_result.rows || [];
+    await rows.push({
+      locktimestamp: String(Number(rows[rows.length - 1].locktimestamp) + 306),
+      lockprice: rows[rows.length - 1].closeprice
+    });
     const return_data = rows.map((row) => ({
         colC: row.locktimestamp,
         colD: row.lockprice,
