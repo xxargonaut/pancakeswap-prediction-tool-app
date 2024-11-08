@@ -152,9 +152,14 @@ class GraphWidget(FigureCanvas):
             if epoch_rsi is not None:
                 generated_epoch_rsi = self.generator_stoch_rsi(epoch_rsi, epoch_rsi_data_y)
                 # Use the same x-axis and overlay Stochastic RSI on the primary y-axis
-                self.ax.plot(epoch_rsi_data_x[-(len(epoch_data) + 1):], generated_epoch_rsi[-(len(epoch_data) + 1):], color='r', linestyle='-', linewidth=1, label='Epoch_RSI', alpha=0.7)
-                self.ax.hlines(y=max(generated_epoch_rsi[-(len(epoch_data) + 1):]), xmin=epoch_rsi_data_x[-(len(epoch_data) + 1)], xmax=epoch_rsi_data_x[-1], color='r', linestyle=':', linewidth=1, alpha=0.7)
-                self.ax.hlines(y=min(generated_epoch_rsi[-(len(epoch_data) + 1):]), xmin=epoch_rsi_data_x[-(len(epoch_data) + 1)], xmax=epoch_rsi_data_x[-1], color='r', linestyle=':', linewidth=1, alpha=0.7)
+
+                if len(epoch_data) < len(generated_epoch_rsi):
+                    min_length = len(epoch_data) + 1
+                else:
+                    min_length = len(generated_epoch_rsi)
+                self.ax.plot(epoch_rsi_data_x[-min_length:], generated_epoch_rsi[-min_length:], color='r', linestyle='-', linewidth=1, label='Epoch_RSI', alpha=0.7)
+                self.ax.hlines(y=max(generated_epoch_rsi[-min_length:]), xmin=epoch_rsi_data_x[-min_length], xmax=epoch_rsi_data_x[-1], color='r', linestyle=':', linewidth=1, alpha=0.7)
+                self.ax.hlines(y=min(generated_epoch_rsi[-min_length:]), xmin=epoch_rsi_data_x[-min_length], xmax=epoch_rsi_data_x[-1], color='r', linestyle=':', linewidth=1, alpha=0.7)
 
         # Setting Answer_Data if enabled
         if self.answer_ema_enabled or self.answer_sma_enabled or self.answer_rsi_enabled:
@@ -178,9 +183,14 @@ class GraphWidget(FigureCanvas):
             if answer_rsi is not None:
                 generated_answer_rsi = self.generator_stoch_rsi(answer_rsi, answer_rsi_data_y)
                 # Use the same x-axis and overlay Stochastic RSI on the primary y-axis
-                self.ax.plot(answer_rsi_data_x[-(len(answer_data) + 1):], generated_answer_rsi[-(len(answer_data) + 1):], color='r', linestyle='-', linewidth=1, label='Answer_RSI', alpha=0.7)
-                self.ax.hlines(y=max(generated_answer_rsi[-(len(answer_data) + 1):]), xmin=answer_rsi_data_x[-(len(answer_data) + 1)], xmax=answer_rsi_data_x[-1], color='r', linestyle=':', linewidth=1, alpha=0.7)
-                self.ax.hlines(y=min(generated_answer_rsi[-(len(answer_data) + 1):]), xmin=answer_rsi_data_x[-(len(answer_data) + 1)], xmax=answer_rsi_data_x[-1], color='r', linestyle=':', linewidth=1, alpha=0.7)
+                
+                if len(answer_data) < len(generated_answer_rsi):
+                    min_length = len(answer_data) + 1
+                else:
+                    min_length = len(generated_answer_rsi)
+                self.ax.plot(answer_rsi_data_x[-min_length:], generated_answer_rsi[-min_length:], color='r', linestyle='-', linewidth=1, label='Answer_RSI', alpha=0.7)
+                self.ax.hlines(y=max(generated_answer_rsi[-min_length:]), xmin=answer_rsi_data_x[-min_length], xmax=answer_rsi_data_x[-1], color='r', linestyle=':', linewidth=1, alpha=0.7)
+                self.ax.hlines(y=min(generated_answer_rsi[-min_length:]), xmin=answer_rsi_data_x[-min_length], xmax=answer_rsi_data_x[-1], color='r', linestyle=':', linewidth=1, alpha=0.7)
 # ####################################################
 
         # Set date format for x-axis
