@@ -141,17 +141,20 @@ class GraphWidget(FigureCanvas):
         # Plot Epoch_EMA if enabled
         if self.epoch_ema_enabled:
             epoch_ema = epoch_data_series.ewm(span=self.period, adjust=False).mean()  # Epoch_EMA with a span of 20
-            self.ax.plot(epoch_rsi_data_x[-(len(epoch_data) + 1):], epoch_ema[-(len(epoch_data) + 1):], color='g', linestyle=':', label='Epoch_EMA (' + str(self.period) + ')')
+            self.ax.plot(epoch_rsi_data_x[-(len(epoch_data) + 1):], epoch_ema[-(len(epoch_data) + 1):], color='g', linestyle='-', linewidth=1, label='Epoch_EMA (' + str(self.period) + ')')
         # Plot Epoch_SMA if enabled
         if self.epoch_sma_enabled:
             epoch_sma = epoch_data_series.rolling(window=self.period).mean()  # SMA with a window of 20
-            self.ax.plot(epoch_rsi_data_x[-(len(epoch_data) + 1):], epoch_sma[-(len(epoch_data) + 1):], color='g', linestyle='-.', label='Epoch_SMA (' + str(self.period) + ')')
+            self.ax.plot(epoch_rsi_data_x[-(len(epoch_data) + 1):], epoch_sma[-(len(epoch_data) + 1):], color='b', linestyle='-', linewidth=1, label='Epoch_SMA (' + str(self.period) + ')')
         # Plot Epoch_RSI if enabled
         if self.epoch_rsi_enabled:
             epoch_rsi = self.calculate_stoch_rsi(epoch_rsi_data_y)
             if epoch_rsi is not None:
+                generated_epoch_rsi = self.generator_stoch_rsi(epoch_rsi, epoch_rsi_data_y)
                 # Use the same x-axis and overlay Stochastic RSI on the primary y-axis
-                self.ax.plot(epoch_rsi_data_x[-(len(epoch_data) + 1):], epoch_rsi[-(len(epoch_data) + 1):], color='g', linestyle='--', label='Epoch_RSI', alpha=0.7)
+                self.ax.plot(epoch_rsi_data_x[-(len(epoch_data) + 1):], generated_epoch_rsi[-(len(epoch_data) + 1):], color='r', linestyle='-', linewidth=1, label='Epoch_RSI', alpha=0.7)
+                self.ax.hlines(y=max(generated_epoch_rsi[-(len(epoch_data) + 1):]), xmin=epoch_rsi_data_x[-(len(epoch_data) + 1)], xmax=epoch_rsi_data_x[-1], color='r', linestyle=':', linewidth=1, alpha=0.7)
+                self.ax.hlines(y=min(generated_epoch_rsi[-(len(epoch_data) + 1):]), xmin=epoch_rsi_data_x[-(len(epoch_data) + 1)], xmax=epoch_rsi_data_x[-1], color='r', linestyle=':', linewidth=1, alpha=0.7)
 
         # Setting Answer_Data if enabled
         if self.answer_ema_enabled or self.answer_sma_enabled or self.answer_rsi_enabled:
@@ -164,17 +167,20 @@ class GraphWidget(FigureCanvas):
         # Plot Answer_EMA if enabled
         if self.answer_ema_enabled:
             answer_ema = answer_data_series.ewm(span=self.period, adjust=False).mean()  # Answer_EMA with a span of 20
-            self.ax.plot(answer_rsi_data_x[-(len(answer_data) + 1):], answer_ema[-(len(answer_data) + 1):], color='b', linestyle=':', label='Answer_EMA (' + str(self.period) + ')')
+            self.ax.plot(answer_rsi_data_x[-(len(answer_data) + 1):], answer_ema[-(len(answer_data) + 1):], color='g', linestyle='-', linewidth=1, label='Answer_EMA (' + str(self.period) + ')')
         # Plot Answer_SMA if enabled
         if self.answer_sma_enabled:
             answer_sma = answer_data_series.rolling(window=self.period).mean()  # Answer_SMA with a window of 20
-            self.ax.plot(answer_rsi_data_x[-(len(answer_data) + 1):], answer_sma[-(len(answer_data) + 1):], color='b', linestyle='-.', label='Answer_SMA (' + str(self.period) + ')')
+            self.ax.plot(answer_rsi_data_x[-(len(answer_data) + 1):], answer_sma[-(len(answer_data) + 1):], color='b', linestyle='-', linewidth=1, label='Answer_SMA (' + str(self.period) + ')')
         # Plot Answer_RSI if enabled
         if self.answer_rsi_enabled:
             answer_rsi = self.calculate_stoch_rsi(answer_rsi_data_y)
             if answer_rsi is not None:
+                generated_answer_rsi = self.generator_stoch_rsi(answer_rsi, answer_rsi_data_y)
                 # Use the same x-axis and overlay Stochastic RSI on the primary y-axis
-                self.ax.plot(answer_rsi_data_x[-(len(answer_data) + 1):], answer_rsi[-(len(answer_data) + 1):], color='b', linestyle='--', label='Answer_RSI', alpha=0.7)
+                self.ax.plot(answer_rsi_data_x[-(len(answer_data) + 1):], generated_answer_rsi[-(len(answer_data) + 1):], color='r', linestyle='-', linewidth=1, label='Answer_RSI', alpha=0.7)
+                self.ax.hlines(y=max(generated_answer_rsi[-(len(answer_data) + 1):]), xmin=answer_rsi_data_x[-(len(answer_data) + 1)], xmax=answer_rsi_data_x[-1], color='r', linestyle=':', linewidth=1, alpha=0.7)
+                self.ax.hlines(y=min(generated_answer_rsi[-(len(answer_data) + 1):]), xmin=answer_rsi_data_x[-(len(answer_data) + 1)], xmax=answer_rsi_data_x[-1], color='r', linestyle=':', linewidth=1, alpha=0.7)
 # ####################################################
 
         # Set date format for x-axis
@@ -206,9 +212,13 @@ class GraphWidget(FigureCanvas):
 
         # Calculate Stochastic RSI
         stoch_rsi = ((rsi - rsi.rolling(window=window).min()) /
-                     (rsi.rolling(window=window).max() - rsi.rolling(window=window).min())) * (int(max(data))-int(min(data))) + int(min(data))
+                     (rsi.rolling(window=window).max() - rsi.rolling(window=window).min()))
 
         return stoch_rsi.dropna().values  # Drop NaN values and return
+    def generator_stoch_rsi(self, data_rsi, data_y):
+        height = float(max(data_y[30:]) - min(data_y[30:]))
+        stoch_rsi = [float(row)*height/5 + float(min(data_y[30:])) - height*6/25 for row in data_rsi]
+        return stoch_rsi
 # ####################################################
 
     def next_page(self):
@@ -267,12 +277,15 @@ class GraphWidget(FigureCanvas):
 
     def set_epoch_ema_enabled(self, enabled):
         self.epoch_ema_enabled = enabled
+        self.plot_page(self.current_page)
 
     def set_epoch_sma_enabled(self, enabled):
         self.epoch_sma_enabled = enabled
+        self.plot_page(self.current_page)
 
     def set_epoch_rsi_enabled(self, enabled):
         self.epoch_rsi_enabled = enabled
+        self.plot_page(self.current_page)
 
 
     def set_answer_enabled(self, enabled):
@@ -281,14 +294,14 @@ class GraphWidget(FigureCanvas):
 
     def set_answer_ema_enabled(self, enabled):
         self.answer_ema_enabled = enabled
+        self.plot_page(self.current_page)
 
     def set_answer_sma_enabled(self, enabled):
         self.answer_sma_enabled = enabled
+        self.plot_page(self.current_page)
 
     def set_answer_rsi_enabled(self, enabled):
         self.answer_rsi_enabled = enabled
-    
-    def apply_rsi_ma(self):
         self.plot_page(self.current_page)
 # ####################################################
 
@@ -336,6 +349,7 @@ class MainWindow(QMainWindow):
 
         # Checkboxes for Epoch EMA, SMA, and Stoch RSI
         self.epoch_checkbox = QCheckBox("Epoch")
+        self.epoch_checkbox.setChecked(True)
         self.epoch_checkbox.stateChanged.connect(lambda state: self.graph_widget.set_epoch_enabled(state == 2))
         control_panel_layout.addWidget(self.epoch_checkbox)
 
@@ -354,6 +368,7 @@ class MainWindow(QMainWindow):
 
         # Checkboxes for Answer EMA, SMA, and Stoch RSI
         self.answer_checkbox = QCheckBox("Answer")
+        self.answer_checkbox.setChecked(True)
         self.answer_checkbox.stateChanged.connect(lambda state: self.graph_widget.set_answer_enabled(state == 2))
         control_panel_layout.addWidget(self.answer_checkbox)
 
@@ -368,11 +383,6 @@ class MainWindow(QMainWindow):
         self.answer_rsi_checkbox = QCheckBox("Answer RSI")
         self.answer_rsi_checkbox.stateChanged.connect(lambda state: self.graph_widget.set_answer_rsi_enabled(state == 2))
         control_panel_layout.addWidget(self.answer_rsi_checkbox)
-
-        # Apply buttons
-        self.apply_button = QPushButton("Apply")
-        self.apply_button.clicked.connect(self.graph_widget.apply_rsi_ma)
-        control_panel_layout.addWidget(self.apply_button)
 
 # ####################################################
         # Navigation buttons
